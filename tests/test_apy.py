@@ -64,4 +64,8 @@ def test_get_non_existable_machine_summary():
 def test_get_machines_without_alarms():
     response = client.get("/machines/3/summary")
 
-    assert response.status_code == 404
+    assert response.status_code == 200
+    
+    summary = response.json()
+
+    assert summary["alarm_count"] == 0
