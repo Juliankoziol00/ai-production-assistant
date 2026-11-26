@@ -34,4 +34,34 @@ def test_alarms_found():
 
     assert len(alarms) > 0
     assert alarms[0]["machine_id"] == 1
-    
+
+def test_get_stopped_machines():
+    response = client.get("/machines/stopped")
+
+    assert response.status_code == 200
+
+    stopped_machines = response.json()
+
+    assert type(stopped_machines) == list
+    assert "CNC-02" in stopped_machines
+
+def test_get_machine_summary():
+    response = client.get("/machines/1/summary")
+
+    assert response.status_code == 200
+
+    summary = response.json()
+
+    assert isinstance(summary, dict)
+    assert summary["machine_id"] == 1
+    assert "alarm_count" in summary
+
+def test_get_non_existable_machine_summary():
+    response = client.get("/machines/999/summary")
+
+    assert response.status_code == 404
+
+def test_get_machines_without_alarms():
+    response = client.get("/machines/3/summary")
+
+    assert response.status_code == 404
